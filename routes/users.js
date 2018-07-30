@@ -32,6 +32,7 @@ router.post('/createuser', function(req, res, next) {
     }
 
     req.session.userID = user._id;
+    req.session.user = user;
 
     res.render('index', {
       message: 'Hello ' + user.name + ", you've successfully logged in",
@@ -84,11 +85,11 @@ router.put('/update-profile', function(req, res, next) {
   let newProfile = req.body;
 
   if (req.body.password.length < 6) {
-    res.json({
-      message: 'your password must be longer than 6 characters'
-    });
+    let error = 'password needs to have 6 characters'
+    res.render('editpage', {error: error, currentUser: req.session.user});
+    return;
   }
-
+  
   userController.updateUserProfile(userID, newProfile, function(err, updated) {
     if (err) {
       res.json({

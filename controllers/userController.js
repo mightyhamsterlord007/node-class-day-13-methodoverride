@@ -59,6 +59,14 @@ module.exports = {
   },
   updateUserProfile: function(id, params, callback) {
 
+    if (params.password) {
+      var salt = bcrypt.genSaltSync(10);
+      var hash = bcrypt.hashSync(params.password, salt);
+      params.password = hash;
+    }
+
+    console.log(params.password)
+
     User.findByIdAndUpdate(id, params, {new: true}, function(err, updated) {
 
       if (err) {
