@@ -10,7 +10,6 @@ router.get('/createuser', function(req, res, next) {
 });
 
 router.get('/edituser', userMiddleware.findAuthUser, function(req, res, next) {
-  console.log(req.session.userID)
   
 });
 
@@ -32,7 +31,6 @@ router.post('/createuser', function(req, res, next) {
       return;
     }
 
-
     req.session.userID = user._id;
 
     res.render('index', {
@@ -44,6 +42,7 @@ router.post('/createuser', function(req, res, next) {
 });
 
 router.post('/login', function(req, res, next) {
+
   userController.loginUser(req.body, function(err, user) {
     if (err) {
       res.status(404).json({
@@ -60,6 +59,9 @@ router.post('/login', function(req, res, next) {
       });
       return;
     }
+
+    req.session.userID = user._id;
+
     res.render('index', {
       message: 'Hello ' + user.name + ", you've successfully logged in",
       currentUser: user
@@ -68,8 +70,8 @@ router.post('/login', function(req, res, next) {
   });
 });
 
-router.get('/login', function(req, res, next) {
-  res.render('login', { title: 'Please Log In' });
+router.get('/login', function(req, res) {
+  res.render('login', {error: ''});
 });
 
 router.get('/signout', function(req, res, next) {
@@ -80,6 +82,13 @@ router.get('/signout', function(req, res, next) {
 router.put('/update-profile', function(req, res, next) {
   let userID = req.session.userID
   let newProfile = req.body;
+
+  if (req.body.password.length < 6) {
+    res.json({
+      message: 'your password must be longer than 6 characters'
+    });
+  }
+
   userController.updateUserProfile(userID, newProfile, function(err, updated) {
     if (err) {
       res.json({

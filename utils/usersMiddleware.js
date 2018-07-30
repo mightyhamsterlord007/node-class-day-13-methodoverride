@@ -37,7 +37,7 @@ module.exports = {
                 });
                 return;
             }
-            res.render('editpage', {currentUser: user})
+            res.render('editpage', {currentUser: user, error: ''});
         });
 
     }
