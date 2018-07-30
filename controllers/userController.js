@@ -57,7 +57,17 @@ module.exports = {
       });
     });
   },
-  updateUserProfile: function(params, callback) {
-    
+  updateUserProfile: function(id, params, callback) {
+
+    User.findByIdAndUpdate(id, params, {new: true}, function(err, updated) {
+
+      if (err) {
+        callback(err, null);
+        return;
+      }
+
+      callback(null, updated);
+      return;
+    });
   }
 };

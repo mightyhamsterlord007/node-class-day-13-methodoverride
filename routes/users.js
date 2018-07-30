@@ -79,10 +79,22 @@ router.get('/signout', function(req, res, next) {
 
 router.put('/update-profile', function(req, res, next) {
   let userID = req.session.userID
+  let newProfile = req.body;
+  userController.updateUserProfile(userID, newProfile, function(err, updated) {
+    if (err) {
+      res.json({
+        message: 'failure',
+        data: err
+      });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: updated
+    });
+    return;
+  });
 
-  res.json({
-    data: userID
-  })
 });
 
 module.exports = router;
